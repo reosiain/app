@@ -1,0 +1,81 @@
+version: "3.8"
+services:
+  rss_feed:
+    image: reosiain/billy:rss_feed
+    command: uvicorn api:app --host ${RSS_FEED_HOST} --port 1000
+    container_name: rss_feed
+    ports:
+      - "1000:1000"
+    restart: unless-stopped
+    networks:
+      net_internal:
+        ipv4_address: ${RSS_FEED_HOST}
+
+  sentimnet_app:
+    image: reosiain/billy:sentiment_app
+    command: uvicorn app.api:app --host ${SENT_APP_HOST} --port 1001
+    container_name: sentimnet_app
+    ports:
+      - "1001:1001"
+    restart: unless-stopped
+    networks:
+      net_internal:
+        ipv4_address: ${SENT_APP_HOST}
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    command: mongod --bind_ip ${MONGO_HOST} --quiet --port 1002
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ./mongo/database:/data/db
+    ports:
+      - "1002:1002"
+    restart: unless-stopped
+    networks:
+      net_internal:
+        ipv4_address: ${MONGO_HOST}
+
+  robot:
+    image: reosiain/billy:billy
+    command: uvicorn api:app --host ${BILLY_INFRA} --port 1003
+    container_name: billy_infra
+    restart: unless-stopped
+    environment:
+      - RSS_FEED_HOST=${RSS_FEED_HOST}
+      - SENT_APP_HOST=${SENT_APP_HOST}
+      - MONGO_HOST=${MONGO_HOST}
+      - TINKOFF_API_TOKEN=${TINKOFF_API_TOKEN}
+      - BILLY_BOT_TOKEN=${BILLY_BOT_TOKEN}
+      - CHANNEL_ID=${CHANNEL_ID}
+      - VAN_BOT_TOKEN=${VAN_BOT_TOKEN}
+      - PERSONAL_CHAT_ID=${PERSONAL_CHAT_ID}
+    depends_on:
+      - mongodb
+    volumes:
+      - ./source:/code/source
+    ports:
+      - "1003:1003"
+    networks:
+      net_internal:
+        ipv4_address: ${BILLY_INFRA}
+
+networks:
+  net_internal:
+    external: false
+    ipam:
+      config:
+        - subnet: 192.168.55.0/24
+          gateway: 192.168.55.1
+
+  net_external:
+    external: true
+    name: net_external
+
+
+
+
