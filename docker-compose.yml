@@ -27,12 +27,13 @@ services:
   mongodb:
     image: mongo
     container_name: mongodb
-    command: mongod --bind_ip ${MONGO_HOST} --quiet --port 1002
+    command: mongod --quiet --port 1002 --bind_ip ${MONGO_HOST}
     environment:
       - PUID=1000
       - PGID=1000
     volumes:
       - ./mongo/database:/data/db
+      - ./source:/data/log
     ports:
       - "1002:1002"
     restart: unless-stopped
@@ -63,6 +64,30 @@ services:
     networks:
       net_internal:
         ipv4_address: ${BILLY_INFRA}
+
+  tgbot:
+    image: reosiain/billy:tgbot
+    command: python hello.py
+    container_name: tgbot
+    restart: unless-stopped
+    environment:
+      - BILLY_INFRA=${BILLY_INFRA}
+      - RSS_FEED_HOST=${RSS_FEED_HOST}
+      - SENT_APP_HOST=${SENT_APP_HOST}
+      - MONGO_HOST=${MONGO_HOST}
+      - BILLY_BOT_TOKEN=${BILLY_BOT_TOKEN}
+      - CHANNEL_ID=${CHANNEL_ID}
+      - VAN_BOT_TOKEN=${VAN_BOT_TOKEN}
+      - PERSONAL_CHAT_ID=${PERSONAL_CHAT_ID}
+    depends_on:
+      - robot
+    volumes:
+      - ./source:/code/source
+    ports:
+      - "1004:1004"
+    networks:
+      net_internal:
+        ipv4_address: ${TGBOT_HOST}
 
 networks:
   net_internal:
