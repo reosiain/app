@@ -1,0 +1,12 @@
+[submodule "billy"]
+	path = billy
+	url = https://github.com/reosiain/billy.git
+[submodule "sentiment_app"]
+	path = sentiment_app
+	url = https://github.com/reosiain/sentiment_app.git
+[submodule "rss-feed"]
+	path = rss-feed
+	url = https://github.com/reosiain/rss-feed.git
+[submodule "tgbot"]
+	path = tgbot
+	url = https://github.com/reosiain/telebilly.git
