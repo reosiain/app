@@ -2,7 +2,7 @@ version: "3.8"
 services:
   rss_feed:
     image: reosiain/billy:rss_feed
-    command: uvicorn api:app --host ${RSS_FEED_HOST} --port 1000
+    command: check_feed.py
     container_name: rss_feed
     ports:
       - "1000:1000"
