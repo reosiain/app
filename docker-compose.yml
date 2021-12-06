@@ -2,8 +2,13 @@ version: "3.8"
 services:
   rss_feed:
     image: reosiain/billy:rss_feed
-    command: check_feed.py
+    command: python check_feed.py
     container_name: rss_feed
+    environment:
+      - BILLY_INFRA=${BILLY_INFRA}
+      - RSS_FEED_HOST=${RSS_FEED_HOST}
+      - SENT_APP_HOST=${SENT_APP_HOST}
+      - MONGO_HOST=${MONGO_HOST}
     ports:
       - "1000:1000"
     restart: unless-stopped
