@@ -12,10 +12,10 @@ pipenv lock -r > requirements.txt
 docker build -t reosiain/billy:rss_feed .
 
 #3. Build sentiment_app image
-cd ..
-cd sentiment_app || exit
-pipenv lock -r > requirements.txt
-docker build -t reosiain/billy:sentiment_app .
+#cd ..
+#cd sentiment_app || exit
+#pipenv lock -r > requirements.txt
+#docker build -t reosiain/billy:sentiment_app .
 
 #4. Build tgbot image
 cd ..
