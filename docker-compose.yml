@@ -94,6 +94,15 @@ services:
       net_internal:
         ipv4_address: ${TGBOT_HOST}
 
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+      - "443:443"
+
 networks:
   net_internal:
     external: false
