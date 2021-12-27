@@ -2,7 +2,7 @@ version: "3.8"
 services:
   rss_feed:
     image: reosiain/billy:rss_feed
-    command: python check_feed.py
+    command: uvicorn api:app --host ${RSS_FEED_HOST} --port 1000
     container_name: rss_feed
     environment:
       - BILLY_INFRA=${BILLY_INFRA}
@@ -93,6 +93,15 @@ services:
     networks:
       net_internal:
         ipv4_address: ${TGBOT_HOST}
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+      - "443:443"
 
 networks:
   net_internal:
